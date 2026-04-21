@@ -115,19 +115,17 @@
     position: relative;
     overflow: hidden;
   }
-  .hero-grid {
+  #hero-canvas {
     position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(245,197,24,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(245,197,24,0.04) 1px, transparent 1px);
-    background-size: 80px 80px;
-    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
   .hero-glow {
     position: absolute;
     width: 600px; height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245,197,24,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(245,197,24,0.06) 0%, transparent 70%);
     top: 50%; left: 50%;
     transform: translate(-50%, -60%);
     pointer-events: none;
@@ -621,21 +619,162 @@
     letter-spacing: -0.05em;
   }
 
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: none;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px; height: 1.5px;
+    background: var(--text);
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8,8,8,0.97);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    backdrop-filter: blur(10px);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
+    nav { padding: 18px 20px; }
     .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
+    nav .btn-primary { font-size: 11px; padding: 8px 16px; }
+
+    .hero { padding: 100px 20px 80px; min-height: 100svh; }
     .hero-photo { display: none; }
     .hero-content { max-width: 100%; }
-    section { padding: 80px 24px; }
-    .about-grid { grid-template-columns: 1fr; gap: 40px; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .project-card:first-child { grid-column: span 1; aspect-ratio: 4/3; }
+    h1 { font-size: clamp(44px, 14vw, 80px); }
+    .hero-sub { font-size: 15px; margin-top: 28px; max-width: 100%; }
+    .hero-cta { flex-wrap: wrap; gap: 12px; }
+    .btn-primary, .btn-ghost { font-size: 13px; padding: 12px 24px; }
+    .hero-scroll { bottom: 20px; left: 20px; }
+
+    .marquee-item { padding: 0 24px; font-size: 12px; }
+
+    .stats { grid-template-columns: 1fr 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); padding: 28px 20px; }
+    .stat:nth-child(odd) { border-right: 1px solid var(--border); }
+    .stat-num { font-size: 40px; }
+
+    section { padding: 60px 20px; }
+    h2 { font-size: clamp(28px, 8vw, 48px); }
+
+    .about-grid { grid-template-columns: 1fr; gap: 36px; }
+    .about-image img { aspect-ratio: 3/2; object-fit: cover; object-position: top; }
+    .about-text p { font-size: 15px; }
+    .skills-list { gap: 8px; }
+
+    .work { padding: 60px 20px; }
+    .work-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 32px; }
+    .work-header p { max-width: 100%; font-size: 14px; }
+
+    .projects-grid { grid-template-columns: 1fr; gap: 3px; }
+    .project-card { aspect-ratio: 16/10; }
+    .project-card:first-child { grid-column: span 1; aspect-ratio: 16/10; }
+    .project-info {
+      transform: translateY(0) !important;
+      padding: 24px 20px 20px;
+      background: linear-gradient(to top, rgba(0,0,0,0.96) 0%, rgba(0,0,0,0.65) 60%, transparent 100%);
+    }
+    .project-title { font-size: 18px; margin-bottom: 6px; }
+    .project-desc { font-size: 13px; line-height: 1.5; }
+    .project-tags { margin-top: 10px; }
+    .project-tag { font-size: 10px; padding: 2px 8px; }
+    .project-arrow { opacity: 1 !important; transform: translateY(0) !important; }
+    .explore-btn { margin-top: 14px; padding: 9px 18px; font-size: 11px; }
+    .store-btns { gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .store-btn { padding: 8px 14px; font-size: 10px; }
+    .store-btn svg { width: 16px; height: 16px; }
+    .store-btn-name { font-size: 11px; }
+    .store-btn-sub { font-size: 8px; }
+
+    .contact { padding: 60px 20px; }
+    .contact h2 { font-size: clamp(36px, 10vw, 64px); }
+    .contact-sub { font-size: 15px; }
+    .contact-links { flex-direction: column; align-items: stretch; gap: 12px; }
+    .contact-item { justify-content: center; font-size: 13px; padding: 14px 20px; }
+
+    footer { flex-direction: column; gap: 10px; text-align: center; padding: 20px; }
+    .footer-copy, .footer-made { font-size: 12px; }
+    .deco-x { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 16px; }
+    .logo { font-size: 17px; }
+    .hero { padding: 90px 16px 70px; }
+    .hero-scroll { display: none; }
+    h1 { font-size: clamp(38px, 15vw, 64px); letter-spacing: -0.04em; }
+    .hero-tag { font-size: 11px; padding: 5px 12px; }
+    .hero-sub { font-size: 14px; margin-top: 20px; }
+    .hero-cta { flex-direction: column; gap: 10px; }
+    .btn-primary, .btn-ghost { text-align: center; width: 100%; padding: 14px; }
+
     .stats { grid-template-columns: 1fr; }
-    .stat { border-right: none; border-bottom: 1px solid var(--border); padding: 32px 24px; }
-    .contact { padding: 80px 24px; }
-    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
-    .work-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .stat { border-right: none !important; }
+    .stat-num { font-size: 36px; }
+    .stat-label { font-size: 12px; }
+
+    section { padding: 48px 16px; }
+    h2 { font-size: clamp(26px, 9vw, 40px); }
+    .section-tag { font-size: 10px; }
+
+    .about-image-frame { display: none; }
+    .skills-list { gap: 6px; }
+    .skill-tag { font-size: 12px; padding: 5px 12px; }
+
+    .work { padding: 48px 16px; }
+    .projects-grid { gap: 2px; }
+    .project-card { aspect-ratio: 4/3; }
+    .project-title { font-size: 16px; }
+    .project-desc { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .project-tags { gap: 5px; }
+    .explore-btn { font-size: 10px; padding: 8px 14px; width: 100%; justify-content: center; }
+    .store-btns { flex-direction: column; gap: 8px; }
+    .store-btn { width: 100%; justify-content: center; padding: 10px 16px; }
+    .store-btn-name { font-size: 12px; }
+
+    .contact { padding: 48px 16px; }
+    .contact h2 { font-size: clamp(30px, 12vw, 52px); }
+    .contact-item { font-size: 12px; padding: 12px 16px; }
+    .contact-item svg { width: 14px; height: 14px; }
+
+    footer { padding: 18px 16px; gap: 8px; }
+
+    .marquee-item { padding: 0 16px; font-size: 11px; }
+  }
+
+  @media (max-width: 380px) {
+    h1 { font-size: clamp(34px, 14vw, 52px); }
+    .project-card { aspect-ratio: 3/2; }
+    .project-title { font-size: 15px; }
   }
 
   .explore-btn {
@@ -689,6 +828,194 @@
   .store-btn-label { display: flex; flex-direction: column; line-height: 1.3; }
   .store-btn-sub { font-size: 9px; font-weight: 400; opacity: 0.7; letter-spacing: 0.08em; text-transform: uppercase; }
   .store-btn-name { font-size: 13px; font-weight: 700; }
+
+  /* ── Hero Animated Words ─────────────────────────────── */
+  .hero-float-words {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  /* ── Scrolling ticker rows ── */
+  .ticker-row {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+    will-change: transform;
+  }
+  .ticker-row span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .ticker-row span::after {
+    content: '×';
+    font-size: 0.6em;
+    opacity: 0.5;
+  }
+
+  /* Row 1 — CREATIVE, large gold outline, drifts right→left top area */
+  .ticker-creative {
+    top: 12%;
+    animation: tickerLeft 28s linear infinite;
+  }
+  .ticker-creative span {
+    font-size: clamp(52px, 9vw, 110px);
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(245,197,24,0.22);
+  }
+
+  /* Row 2 — TECHNOLOGY, medium, drifts left→right mid area */
+  .ticker-technology {
+    bottom: 24%;
+    animation: tickerRight 22s linear infinite;
+  }
+  .ticker-technology span {
+    font-size: clamp(28px, 5vw, 60px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,200,200,0.10);
+  }
+
+  /* Row 3 — small words, very faint, drifts right→left lower */
+  .ticker-small {
+    bottom: 10%;
+    animation: tickerLeft 18s linear infinite;
+    animation-delay: -6s;
+  }
+  .ticker-small span {
+    font-size: clamp(11px, 1.6vw, 18px);
+    color: rgba(245,197,24,0.08);
+    letter-spacing: 0.2em;
+    padding: 0 24px;
+    gap: 24px;
+  }
+
+  @keyframes tickerLeft {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes tickerRight {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  /* ── Glitch / pulse on CREATIVE ── */
+  .ticker-creative span {
+    animation: glitchPulse 6s ease-in-out infinite;
+  }
+  @keyframes glitchPulse {
+    0%, 100% { -webkit-text-stroke: 1.5px rgba(245,197,24,0.22); }
+    30%       { -webkit-text-stroke: 1.5px rgba(245,197,24,0.45); filter: drop-shadow(0 0 12px rgba(245,197,24,0.25)); }
+    32%       { -webkit-text-stroke: 1.5px rgba(255,80,80,0.3);   filter: drop-shadow(2px 0 0 rgba(245,197,24,0.2)); }
+    34%       { -webkit-text-stroke: 1.5px rgba(245,197,24,0.45); filter: drop-shadow(-2px 0 0 rgba(80,200,255,0.15)); }
+    36%       { -webkit-text-stroke: 1.5px rgba(245,197,24,0.22); filter: none; }
+    70%       { -webkit-text-stroke: 1.5px rgba(245,197,24,0.35); filter: drop-shadow(0 0 8px rgba(245,197,24,0.15)); }
+  }
+
+  /* ── Vertical side label ── */
+  .hero-side-label {
+    position: absolute;
+    right: 56px;
+    bottom: 50%;
+    transform: translateY(50%) rotate(90deg);
+    transform-origin: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(245,197,24,0.25);
+    white-space: nowrap;
+    z-index: 1;
+    pointer-events: none;
+    animation: sideLabelPulse 4s ease-in-out infinite;
+  }
+  @keyframes sideLabelPulse {
+    0%,100% { opacity: 0.6; }
+    50%     { opacity: 1; color: rgba(245,197,24,0.5); }
+  }
+
+  /* ── Corner accent brackets ── */
+  .hero-bracket {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation: bracketIn 1s ease forwards;
+  }
+  .hero-bracket::before,
+  .hero-bracket::after {
+    content: '';
+    position: absolute;
+    background: rgba(245,197,24,0.35);
+  }
+  .hero-bracket.tl { top: 20px; left: 20px; animation-delay: 1.2s; }
+  .hero-bracket.tr { top: 20px; right: 20px; animation-delay: 1.4s; }
+  .hero-bracket.bl { bottom: 20px; left: 20px; animation-delay: 1.6s; }
+  .hero-bracket.br { bottom: 20px; right: 20px; animation-delay: 1.8s; }
+
+  .hero-bracket.tl::before { top:0; left:0; width:100%; height:2px; }
+  .hero-bracket.tl::after  { top:0; left:0; width:2px; height:100%; }
+  .hero-bracket.tr::before { top:0; right:0; width:100%; height:2px; }
+  .hero-bracket.tr::after  { top:0; right:0; width:2px; height:100%; }
+  .hero-bracket.bl::before { bottom:0; left:0; width:100%; height:2px; }
+  .hero-bracket.bl::after  { bottom:0; left:0; width:2px; height:100%; }
+  .hero-bracket.br::before { bottom:0; right:0; width:100%; height:2px; }
+  .hero-bracket.br::after  { bottom:0; right:0; width:2px; height:100%; }
+
+  @keyframes bracketIn {
+    from { opacity:0; transform: scale(0.5); }
+    to   { opacity:1; transform: scale(1); }
+  }
+
+  /* ── Animated counter badge ── */
+  .hero-counter {
+    position: absolute;
+    bottom: 56px;
+    right: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeUp 0.8s 2s forwards;
+  }
+  .hero-counter-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .hero-counter-label {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,197,24,0.5);
+  }
+
+  @media (max-width: 600px) {
+    .ticker-creative span { font-size: clamp(36px, 12vw, 64px); }
+    .ticker-technology span { font-size: clamp(20px, 6vw, 36px); }
+    .hero-side-label { display: none; }
+    .hero-counter { bottom: 80px; right: 16px; }
+    .hero-counter-num { font-size: 28px; }
+    .hero-bracket.tr, .hero-bracket.br { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -706,13 +1033,68 @@
     <li><a href="#contact">Contact</a></li>
   </ul>
   <a href="mailto:pp.pyaephyokyaw@gmail.com" class="btn-primary" style="font-size:12px; padding:10px 22px;">Hire Me</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#work" class="mobile-link">Work</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+  <a href="mailto:pp.pyaephyokyaw@gmail.com" style="font-size:14px; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; font-family:'DM Sans',sans-serif; font-weight:500;">pp.pyaephyokyaw@gmail.com</a>
+</div>
 
 <!-- Hero -->
 <section class="hero" id="home">
-  <div class="hero-grid"></div>
+  <canvas id="hero-canvas"></canvas>
   <div class="hero-glow"></div>
   <div class="deco-x" style="right:-40px;top:60px;opacity:0.04">×</div>
+
+  <!-- Corner brackets -->
+  <div class="hero-bracket tl" aria-hidden="true"></div>
+  <div class="hero-bracket tr" aria-hidden="true"></div>
+  <div class="hero-bracket bl" aria-hidden="true"></div>
+  <div class="hero-bracket br" aria-hidden="true"></div>
+
+  <!-- Side label -->
+  <div class="hero-side-label" aria-hidden="true">Creative &amp; Technology</div>
+
+  <!-- Animated ticker rows -->
+  <div class="hero-float-words" aria-hidden="true">
+
+    <!-- Row 1: CREATIVE scrolls right→left, duplicated for seamless loop -->
+    <div class="ticker-row ticker-creative">
+      <span>Creative</span><span>Creative</span><span>Creative</span>
+      <span>Creative</span><span>Creative</span><span>Creative</span>
+      <span>Creative</span><span>Creative</span><span>Creative</span>
+      <span>Creative</span><span>Creative</span><span>Creative</span>
+    </div>
+
+    <!-- Row 2: TECHNOLOGY scrolls left→right -->
+    <div class="ticker-row ticker-technology">
+      <span>Technology</span><span>Technology</span><span>Technology</span>
+      <span>Technology</span><span>Technology</span><span>Technology</span>
+      <span>Technology</span><span>Technology</span><span>Technology</span>
+      <span>Technology</span><span>Technology</span><span>Technology</span>
+    </div>
+
+    <!-- Row 3: small words -->
+    <div class="ticker-row ticker-small">
+      <span>UI Design</span><span>UX Research</span><span>Prototyping</span>
+      <span>Wireframing</span><span>Innovation</span><span>Digital</span>
+      <span>UI Design</span><span>UX Research</span><span>Prototyping</span>
+      <span>Wireframing</span><span>Innovation</span><span>Digital</span>
+    </div>
+
+  </div>
+
+  <!-- Animated years counter -->
+  <div class="hero-counter" aria-hidden="true">
+    <div class="hero-counter-num" id="heroCounter">0+</div>
+    <div class="hero-counter-label">Years Experience</div>
+  </div>
 
   <div class="hero-content">
     <div class="hero-tag">Available for work</div>
@@ -826,6 +1208,7 @@
           <span class="project-tag">IoT</span>
           <span class="project-tag">Single Page</span>
         </div>
+        <a href="https://www.yomainnosights.com/" target="_blank" rel="noopener" class="explore-btn">Explore More ↗</a>
       </div>
       <!-- Decorative elements -->
       <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Syne',sans-serif; font-size:120px; font-weight:800; color:rgba(245,197,24,0.03); pointer-events:none; white-space:nowrap;">IoT Solutions</div>
@@ -975,6 +1358,25 @@
     });
   });
 
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Hamburger cursor
+  hamburger.style.cursor = 'pointer';
+
   // Navbar scroll
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
@@ -996,6 +1398,189 @@
   document.querySelectorAll('.stat').forEach((el, i) => {
     el.style.transitionDelay = `${i * 0.15}s`;
   });
+</script>
+
+<script>
+  // ── Hero Canvas Animation ──────────────────────────────────────
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, mouse = { x: -999, y: -999 };
+
+  function resize() {
+    const hero = canvas.parentElement;
+    W = canvas.width = hero.offsetWidth;
+    H = canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  canvas.parentElement.addEventListener('mousemove', e => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  canvas.parentElement.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+
+  // ── Particles ──────────────────────────────────────────────────
+  const PARTICLE_COUNT = 90;
+  let particles = [];
+
+  function initParticles() {
+    particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.8 + 0.4,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      alpha: Math.random() * 0.5 + 0.1,
+      gold: Math.random() > 0.65,
+    }));
+  }
+  initParticles();
+
+  // ── Orbiting Rings ─────────────────────────────────────────────
+  const rings = [
+    { rx: 320, ry: 130, speed: 0.0008, angle: 0,    tilt: 0.38, alpha: 0.07 },
+    { rx: 480, ry: 180, speed: -0.0005, angle: 1.2, tilt: 0.55, alpha: 0.05 },
+    { rx: 200, ry: 80,  speed: 0.0013, angle: 2.5,  tilt: 0.25, alpha: 0.09 },
+  ];
+
+  // ── Shooting Stars ─────────────────────────────────────────────
+  let stars = [];
+  function spawnStar() {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H * 0.6,
+      len: Math.random() * 90 + 40,
+      speed: Math.random() * 4 + 3,
+      angle: Math.PI / 4 + (Math.random() - 0.5) * 0.3,
+      life: 1,
+    });
+  }
+  setInterval(spawnStar, 2200);
+
+  // ── Grid ───────────────────────────────────────────────────────
+  function drawGrid() {
+    const size = 80;
+    ctx.strokeStyle = 'rgba(245,197,24,0.03)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += size) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += size) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+  }
+
+  // ── Counter animation ──────────────────────────────────────
+  setTimeout(() => {
+    const el = document.getElementById('heroCounter');
+    if (!el) return;
+    let n = 0;
+    const target = 4;
+    const step = () => {
+      n++;
+      el.textContent = n + '+';
+      if (n < target) setTimeout(step, 220);
+    };
+    step();
+  }, 2400);────
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t++;
+
+    // Grid
+    drawGrid();
+
+    // Orbiting rings centered slightly right
+    const cx = W * 0.72, cy = H * 0.48;
+    rings.forEach(ring => {
+      ring.angle += ring.speed * 16;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.scale(1, ring.tilt);
+      ctx.rotate(ring.angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, ring.rx, ring.ry, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(245,197,24,${ring.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Dot travelling on ring
+      const dotX = Math.cos(ring.angle * 3) * ring.rx;
+      const dotY = Math.sin(ring.angle * 3) * ring.ry;
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(245,197,24,${ring.alpha * 5})`;
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Particles
+    particles.forEach(p => {
+      // Mouse repel
+      const dx = p.x - mouse.x, dy = p.y - mouse.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 120) {
+        p.vx += (dx / dist) * 0.06;
+        p.vy += (dy / dist) * 0.06;
+      }
+      p.vx *= 0.99; p.vy *= 0.99;
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.gold
+        ? `rgba(245,197,24,${p.alpha})`
+        : `rgba(200,200,200,${p.alpha * 0.5})`;
+      ctx.fill();
+    });
+
+    // Connect nearby particles
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 110) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(245,197,24,${0.06 * (1 - d / 110)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Shooting stars
+    stars = stars.filter(s => s.life > 0);
+    stars.forEach(s => {
+      s.x += Math.cos(s.angle) * s.speed;
+      s.y += Math.sin(s.angle) * s.speed;
+      s.life -= 0.018;
+      const tailX = s.x - Math.cos(s.angle) * s.len * s.life;
+      const tailY = s.y - Math.sin(s.angle) * s.len * s.life;
+      const grad = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+      grad.addColorStop(0, 'rgba(245,197,24,0)');
+      grad.addColorStop(1, `rgba(245,197,24,${s.life * 0.7})`);
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(s.x, s.y);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 1.5 * s.life, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,230,100,${s.life * 0.9})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
 </script>
 </body>
 </html>
